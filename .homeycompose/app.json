@@ -1,8 +1,8 @@
 {
   "id": "de.zerov.discovergymeter",
-  "source": "www",
+  "source": "https://github.com/chriszero/de.zerov.discovergymeter",
   "bugs": {
-    "url": "www"
+    "url": "https://github.com/chriszero/de.zerov.discovergymeter/issues"
   },
   "version": "1.0.0",
   "compatibility": ">=5.0.0",
