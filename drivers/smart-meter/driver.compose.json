@@ -1,0 +1,158 @@
+{
+  "name": {
+    "en": "Smart Meter",
+    "de": "Intelligenter Stromzähler"
+  },
+  "class": "sensor",
+  "capabilities": [
+    "meter_power",
+    "meter_power.t1",
+    "meter_power.t2",
+    "meter_power.out",
+    "measure_power",
+    "measure_power.p1",
+    "measure_power.p2",
+    "measure_power.p3",
+    "measure_voltage.p1",
+    "measure_voltage.p2",
+    "measure_voltage.p3"
+  ],
+  "capabilitiesOptions": {
+    "meter_power.t1": {
+      "title": {
+        "en": "Energy Tariff 1",
+        "de": "Energie Tarif 1 (HT)"
+      }
+    },
+    "meter_power.t2": {
+      "title": {
+        "en": "Energy Tariff 2",
+        "de": "Energie Tarif 2 (NT)"
+      }
+    },
+    "meter_power.out": {
+      "title": {
+        "en": "Energy to Grid",
+        "de": "Energie ins Netz"
+      }
+    },
+    "measure_power.p1": {
+      "title": {
+        "en": "Power P1",
+        "de": "Leistung P1"
+      }
+    },
+    "measure_power.p2": {
+      "title": {
+        "en": "Power P2",
+        "de": "Leistung P2"
+      }
+    },
+    "measure_power.p3": {
+      "title": {
+        "en": "Power P3",
+        "de": "Leistung P3"
+      }
+    },
+    "measure_voltage.p1": {
+      "title": {
+        "en": "Voltage P1",
+        "de": "Spannung P1"
+      }
+    },
+    "measure_voltage.p2": {
+      "title": {
+        "en": "Voltage P2",
+        "de": "Spannung P2"
+      }
+    },
+    "measure_voltage.p3": {
+      "title": {
+        "en": "Voltage P3",
+        "de": "Spannung P3"
+      }
+    }
+  },
+  "energy": {
+    "cumulative": true
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "settings": [
+    {
+      "type": "group",
+      "label": { 
+        "en": "Login details",
+        "de": "Login Details"
+      },
+      "children": [
+        {
+          "id": "username",
+          "type": "text",
+          "label": { 
+            "en": "Username",
+            "de": "Benutzername"
+          },
+          "value": "demo@discovergy.com",
+          "hint": { 
+            "en": "The email of the user.",
+            "de": "E-Mail Adresse des Nutzers."
+          }
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "label": { 
+            "en": "Password",
+            "de": "Passwort"
+          },
+          "value": "Secret",
+          "hint": { 
+            "en": "The password of the user.",
+            "de": "Das Passwort des Benutzers."
+          }
+        }
+      ]
+    }
+  ],
+  "pair": [
+    {
+      "id": "login_credentials",
+      "template": "login_credentials",
+      "options": {
+        "logo": "icon.svg",
+        "usernameLabel": { 
+          "en": "E-mail address",
+          "de": "E-Mail Adresse"
+        },
+        "usernamePlaceholder": { "en": "demo@discovergy.com" },
+        "passwordLabel": { 
+          "en": "Password",
+          "de": "Passwort"
+        },
+        "passwordPlaceholder": { 
+          "en": "Password",
+          "de": "Passwort"
+        }
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

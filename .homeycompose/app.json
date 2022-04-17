@@ -1,0 +1,35 @@
+{
+  "id": "de.zerov.discovergymeter",
+  "source": "www",
+  "bugs": {
+    "url": "www"
+  },
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Discovergy Smart Meter",
+    "de": "Discovergy Smart Meter"
+  },
+  "description": {
+    "en": "Adds support for Discovergy Smart Meters",
+    "de": "Erlaubt es Discovergy Smart Meter zu nutzen"
+  },
+  "category": [
+    "energy"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Christian Völlinger",
+    "email": "zerov83@gmail.com"
+  },
+  "brandColor": "#008739"
+}
