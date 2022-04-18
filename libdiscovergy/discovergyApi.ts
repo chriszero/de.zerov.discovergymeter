@@ -85,9 +85,9 @@ export class DiscovergyApi {
 
     if(lastReading.values['voltage1']){
       lastElectricityReading.voltageAvaliabe = true;
-      lastElectricityReading.voltage1 = lastReading.values['voltage1'];
-      lastElectricityReading.voltage2 = lastReading.values['voltage2'];
-      lastElectricityReading.voltage3 = lastReading.values['voltage3'];
+      lastElectricityReading.voltage1 = lastReading.values['voltage1'] / 1000;
+      lastElectricityReading.voltage2 = lastReading.values['voltage2'] / 1000;
+      lastElectricityReading.voltage3 = lastReading.values['voltage3'] / 1000;
     }
 
     return lastElectricityReading;
