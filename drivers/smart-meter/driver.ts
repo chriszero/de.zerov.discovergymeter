@@ -1,11 +1,7 @@
 import Homey from "homey";
-import {
-  DiscovergyBasicAuth,
-  DiscovergyApi,
-} from "../../libdiscovergy";
+import { DiscovergyBasicAuth, DiscovergyApi } from "../../libdiscovergy";
 
 class ElectricitySmartmeterDriver extends Homey.Driver {
-
   /**
    * onInit is called when the driver is initialized.
    */
@@ -20,19 +16,18 @@ class ElectricitySmartmeterDriver extends Homey.Driver {
     session.setHandler("login", async (data) => {
       username = data.username;
       password = data.password;
-      
+
       const da = new DiscovergyBasicAuth(username, password);
-      
+
       const oAuthClient = await da.authorizeInstance();
 
       let credentialsAreValid = false;
       try {
         const response = await oAuthClient.get("/meters");
         credentialsAreValid = response.status == 200;
-      }
-      catch(error) {
+      } catch (error) {
         credentialsAreValid = false;
-        this.log("Creditials are not valid")
+        this.log("Creditials are not valid");
       }
 
       // return true to continue adding the device if the login succeeded
@@ -51,17 +46,19 @@ class ElectricitySmartmeterDriver extends Homey.Driver {
       const devices = Array();
 
       meters.forEach((meter) => {
-        devices.push({
-          name: meter.fullSerialNumber,
-          data: {
-            id: meter.meterId,
-            meterId: meter.meterId,
-          },
-          settings :{
-            username: username,
-            password: password
-          }
-        });
+        if (meter.measurementType === "ELECTRICITY") {
+          devices.push({
+            name: meter.printedFullSerialNumber,
+            data: {
+              id: meter.meterId,
+              meterId: meter.meterId,
+            },
+            settings: {
+              username: username,
+              password: password,
+            },
+          });
+        }
       });
 
       return devices;
