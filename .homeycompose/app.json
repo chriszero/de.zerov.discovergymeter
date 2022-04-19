@@ -4,7 +4,7 @@
   "bugs": {
     "url": "https://github.com/chriszero/de.zerov.discovergymeter/issues"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -15,8 +15,8 @@
     "de": "Discovergy Smart Meter"
   },
   "description": {
-    "en": "Adds support for Discovergy Smart Meters",
-    "de": "Erlaubt es Discovergy Smart Meter zu nutzen"
+    "en": "Optimize power consumption in your home",
+    "de": "Optimieren Sie den Stromverbrauch Zuhause"
   },
   "category": [
     "energy"
