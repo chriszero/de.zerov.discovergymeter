@@ -7,5 +7,8 @@
   },
   "1.0.2": {
     "en": "Changes according to App Store guidelines."
+  },
+  "1.0.3": {
+    "en": "Handle some errors"
   }
 }

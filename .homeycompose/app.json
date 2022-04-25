@@ -4,7 +4,7 @@
   "bugs": {
     "url": "https://github.com/chriszero/de.zerov.discovergymeter/issues"
   },
-  "version": "1.0.2",
+  "version": "1.0.3",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [

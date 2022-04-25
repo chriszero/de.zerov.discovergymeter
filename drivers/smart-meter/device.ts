@@ -58,25 +58,29 @@ class ElectricitySmartmeterDevice extends Homey.Device {
   }
 
   async setCapabilityValues() {
-    const reading = await this.deviceApi.getLastElectricityReading(
-      this.meterId
-    );
+    try {
+      const reading = await this.deviceApi.getLastElectricityReading(
+        this.meterId
+      );
 
-    this.setCapabilityValue("meter_power", reading.energyInTotal);
-    this.setCapabilityValue("meter_power.t1", reading.energyIn1);
-    this.setCapabilityValue("meter_power.t2", reading.energyIn2);
+      this.setCapabilityValue("meter_power", reading.energyInTotal);
+      this.setCapabilityValue("meter_power.t1", reading.energyIn1);
+      this.setCapabilityValue("meter_power.t2", reading.energyIn2);
 
-    this.setCapabilityValue("meter_power.out", reading.energyOutTotal);
+      this.setCapabilityValue("meter_power.out", reading.energyOutTotal);
 
-    this.setCapabilityValue("measure_power", reading.currentPowerTotal);
-    this.setCapabilityValue("measure_power.p1", reading.currentPower1);
-    this.setCapabilityValue("measure_power.p2", reading.currentPower2);
-    this.setCapabilityValue("measure_power.p3", reading.currentPower3);
+      this.setCapabilityValue("measure_power", reading.currentPowerTotal);
+      this.setCapabilityValue("measure_power.p1", reading.currentPower1);
+      this.setCapabilityValue("measure_power.p2", reading.currentPower2);
+      this.setCapabilityValue("measure_power.p3", reading.currentPower3);
 
-    if (reading.voltageAvaliabe) {
-      this.setCapabilityValue("measure_voltage.p1", reading.voltage1);
-      this.setCapabilityValue("measure_voltage.p2", reading.voltage2);
-      this.setCapabilityValue("measure_voltage.p3", reading.voltage3);
+      if (reading.voltageAvaliabe) {
+        this.setCapabilityValue("measure_voltage.p1", reading.voltage1);
+        this.setCapabilityValue("measure_voltage.p2", reading.voltage2);
+        this.setCapabilityValue("measure_voltage.p3", reading.voltage3);
+      }
+    } catch (error) { 
+      this.log("setCapabilityValues->getLastReading", error);
     }
   }
 
