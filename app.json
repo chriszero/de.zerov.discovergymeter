@@ -5,7 +5,7 @@
   "bugs": {
     "url": "https://github.com/chriszero/de.zerov.discovergymeter/issues"
   },
-  "version": "1.0.3",
+  "version": "1.0.4",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -115,13 +115,43 @@
       "platforms": [
         "local"
       ],
-      "connectivity": [],
+      "connectivity": [
+        "cloud"
+      ],
       "images": {
         "small": "/drivers/smart-meter/assets/images/small.png",
         "large": "/drivers/smart-meter/assets/images/large.png",
         "xlarge": "/drivers/smart-meter/assets/images/xlarge.png"
       },
       "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Extended Settings",
+            "de": "Erweiterte Einstellungen"
+          },
+          "children": [
+            {
+              "id": "interval",
+              "type": "number",
+              "value": 5,
+              "min": 1,
+              "max": 60,
+              "units": {
+                "en": "seconds",
+                "de": "Sekunden"
+              },
+              "label": {
+                "en": "Polling interval",
+                "de": "Aktualisierungsinterval"
+              },
+              "hint": {
+                "en": "Standard is 5sec. Some Meters are ",
+                "de": "Standart ist 5 Sek. Bei Zählern ohne Sekundenwerte sind 60 Sek. ausreichend."
+              }
+            }
+          ]
+        },
         {
           "type": "group",
           "label": {

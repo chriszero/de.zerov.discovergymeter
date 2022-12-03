@@ -10,5 +10,8 @@
   },
   "1.0.3": {
     "en": "Handle some errors"
+  },
+  "1.0.4": {
+    "en": "Update interval of the meter is now configurable."
   }
 }
