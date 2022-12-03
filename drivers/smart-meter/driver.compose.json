@@ -79,7 +79,9 @@
   "platforms": [
     "local"
   ],
-  "connectivity": [],
+  "connectivity": [
+    "cloud"
+  ],
   "images": {
     "small": "{{driverAssetsPath}}/images/small.png",
     "large": "{{driverAssetsPath}}/images/large.png",
@@ -88,7 +90,35 @@
   "settings": [
     {
       "type": "group",
-      "label": { 
+      "label": {
+        "en": "Extended Settings",
+        "de": "Erweiterte Einstellungen"
+      },
+      "children": [
+        {
+          "id": "interval",
+          "type": "number",
+          "value": 5,
+          "min": 1,
+          "max": 60,
+          "units": {
+            "en": "seconds",
+            "de": "Sekunden"
+          },
+          "label": {
+            "en": "Polling interval",
+            "de": "Aktualisierungsinterval"
+          },
+          "hint": {
+            "en": "Standard is 5sec. Some Meters are ",
+            "de": "Standart ist 5 Sek. Bei Zählern ohne Sekundenwerte sind 60 Sek. ausreichend."
+          }
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
         "en": "Login details",
         "de": "Login Details"
       },
@@ -96,12 +126,12 @@
         {
           "id": "username",
           "type": "text",
-          "label": { 
+          "label": {
             "en": "Username",
             "de": "Benutzername"
           },
           "value": "demo@discovergy.com",
-          "hint": { 
+          "hint": {
             "en": "The email of the user.",
             "de": "E-Mail Adresse des Nutzers."
           }
@@ -109,12 +139,12 @@
         {
           "id": "password",
           "type": "password",
-          "label": { 
+          "label": {
             "en": "Password",
             "de": "Passwort"
           },
           "value": "Secret",
-          "hint": { 
+          "hint": {
             "en": "The password of the user.",
             "de": "Das Passwort des Benutzers."
           }
@@ -128,16 +158,18 @@
       "template": "login_credentials",
       "options": {
         "logo": "icon.svg",
-        "usernameLabel": { 
+        "usernameLabel": {
           "en": "E-mail address",
           "de": "E-Mail Adresse"
         },
-        "usernamePlaceholder": { "en": "demo@discovergy.com" },
-        "passwordLabel": { 
+        "usernamePlaceholder": {
+          "en": "demo@discovergy.com"
+        },
+        "passwordLabel": {
           "en": "Password",
           "de": "Passwort"
         },
-        "passwordPlaceholder": { 
+        "passwordPlaceholder": {
           "en": "Password",
           "de": "Passwort"
         }

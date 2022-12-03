@@ -41,11 +41,11 @@ class ElectricitySmartmeterDevice extends Homey.Device {
     this.start();
   }
 
-  private start() {
+  private start(interval: number = this.getSetting("interval")) {
     if (!this.update) {
       this.update = this.homey.setInterval(
         this.setCapabilityValues.bind(this),
-        5000
+        interval * 1000
       );
     }
   }
@@ -106,7 +106,6 @@ class ElectricitySmartmeterDevice extends Homey.Device {
   }): Promise<string | void> {
     this.log("MyDevice settings where changed");
     this.log(event.changedKeys);
-    this.log(event.newSettings);
     this.log(event.newSettings.username);
 
     if (
@@ -132,6 +131,12 @@ class ElectricitySmartmeterDevice extends Homey.Device {
       this.stop();
       this.deviceApi = newApi;
       this.start();
+    }
+
+    if(event.changedKeys.includes("interval") && event.oldSettings.interval != event.newSettings.interval) {
+      this.log("Interval changed to ", event.newSettings.interval);
+      this.stop();
+      this.start(event.newSettings.interval);
     }
   }
 
