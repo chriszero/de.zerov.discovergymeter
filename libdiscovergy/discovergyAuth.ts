@@ -17,7 +17,7 @@ export class DiscovergyBasicAuth implements DiscovergyAuth {
 
   public async authorizeInstance(): Promise<AxiosInstance> {
     const basicAuthClient = axios.create({
-      baseURL: "https://api.discovergy.com/public/v1",
+      baseURL: "https://api.inexogy.com/public/v1",
       auth: {
         username: this.user,
         password: this.password,
@@ -29,7 +29,7 @@ export class DiscovergyBasicAuth implements DiscovergyAuth {
 }
 
 export class DiscovergyOAuth implements DiscovergyAuth {
-  private readonly baseAddress: string = "https://api.discovergy.com/public/v1";
+  private readonly baseAddress: string = "https://api.inexogy.com/public/v1";
   private readonly step1: string = "/oauth1/consumer_token";
   private readonly step2: string = "/oauth1/request_token";
   private readonly step3: string = "/oauth1/authorize";
