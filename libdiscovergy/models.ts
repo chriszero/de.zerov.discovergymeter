@@ -101,7 +101,7 @@ export interface LastElectricityReading {
     /**Watts */
     currentPower3: number;
 
-    voltageAvaliabe: boolean;
+    voltageAvailable: boolean;
     voltage1?: number;
     voltage2?: number;
     voltage3?: number;
