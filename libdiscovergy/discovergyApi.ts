@@ -80,11 +80,11 @@ export class DiscovergyApi {
       currentPower2: lastReading.values["power2"] / 1000,
       currentPower3: lastReading.values["power3"] / 1000,
 
-      voltageAvaliabe: false
+      voltageAvailable: false
     };
 
     if(lastReading.values['voltage1']){
-      lastElectricityReading.voltageAvaliabe = true;
+      lastElectricityReading.voltageAvailable = true;
       lastElectricityReading.voltage1 = lastReading.values['voltage1'] / 1000;
       lastElectricityReading.voltage2 = lastReading.values['voltage2'] / 1000;
       lastElectricityReading.voltage3 = lastReading.values['voltage3'] / 1000;

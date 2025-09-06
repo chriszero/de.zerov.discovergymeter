@@ -25,19 +25,6 @@ class ElectricitySmartmeterDevice extends Homey.Device {
     this.deviceApi = new DiscovergyApi(auth);
     this.meterId = this.getData().meterId;
 
-    try {
-      const reading = await this.deviceApi.getLastElectricityReading(
-        this.meterId
-      );
-      // remove capabilities which are not availiable
-      if (!reading.voltageAvaliabe) {
-        this.removeCapability("measure_voltage.p1").catch();
-        this.removeCapability("measure_voltage.p2").catch();
-        this.removeCapability("measure_voltage.p3").catch();
-      }
-    } catch (error) {
-      this.log(error);
-    }
     this.start();
   }
 
@@ -74,7 +61,7 @@ class ElectricitySmartmeterDevice extends Homey.Device {
       this.setCapabilityValue("measure_power.p2", reading.currentPower2);
       this.setCapabilityValue("measure_power.p3", reading.currentPower3);
 
-      if (reading.voltageAvaliabe) {
+      if (reading.voltageAvailable) {
         this.setCapabilityValue("measure_voltage.p1", reading.voltage1);
         this.setCapabilityValue("measure_voltage.p2", reading.voltage2);
         this.setCapabilityValue("measure_voltage.p3", reading.voltage3);
