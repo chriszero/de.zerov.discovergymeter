@@ -4,15 +4,15 @@
   "bugs": {
     "url": "https://github.com/chriszero/de.zerov.discovergymeter/issues"
   },
-  "version": "1.0.4",
+  "version": "1.0.5",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
     "local"
   ],
   "name": {
-    "en": "Discovergy Smart Meter",
-    "de": "Discovergy Smart Meter"
+    "en": "Inexogy Smart Meter",
+    "de": "Inexogy Smart Meter"
   },
   "description": {
     "en": "Optimize power consumption in your home",

@@ -1,3 +1,3 @@
-Ermöglicht es einen Intelligenten Zähler von Discovergy mit Homey zu nutzen.
+Ermöglicht es einen Intelligenten Zähler von Inexogy mit Homey zu nutzen.
 
 Es können mehrer Zähler von verschiedenen Accounts hinzugefügt werden.
