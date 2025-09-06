@@ -13,5 +13,8 @@
   },
   "1.0.4": {
     "en": "Update interval of the meter is now configurable."
+  },
+  "1.0.6": {
+    "en": "Updated api URL"
   }
 }
