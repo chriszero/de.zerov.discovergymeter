@@ -1,6 +1,8 @@
 import { ConsumerToken, OAuthToken } from "./models";
-import axios, { Axios, AxiosInstance } from "axios";
+import axios, { AxiosInstance } from "axios";
 import addOAuthInterceptor, { OAuthInterceptorConfig } from "axios-oauth-1.0a";
+
+const DISCOVERGY_API_BASE_URL = "https://api.inexogy.com/public/v1";
 
 export interface DiscovergyAuth {
   authorizeInstance(): Promise<AxiosInstance>;
@@ -17,7 +19,7 @@ export class DiscovergyBasicAuth implements DiscovergyAuth {
 
   public async authorizeInstance(): Promise<AxiosInstance> {
     const basicAuthClient = axios.create({
-      baseURL: "https://api.discovergy.com/public/v1",
+      baseURL: DISCOVERGY_API_BASE_URL,
       auth: {
         username: this.user,
         password: this.password,
@@ -29,7 +31,6 @@ export class DiscovergyBasicAuth implements DiscovergyAuth {
 }
 
 export class DiscovergyOAuth implements DiscovergyAuth {
-  private readonly baseAddress: string = "https://api.discovergy.com/public/v1";
   private readonly step1: string = "/oauth1/consumer_token";
   private readonly step2: string = "/oauth1/request_token";
   private readonly step3: string = "/oauth1/authorize";
@@ -43,7 +44,7 @@ export class DiscovergyOAuth implements DiscovergyAuth {
 
   public constructor(client: string, user: string = "", password: string = "", oAuthToken?: OAuthToken)
   {
-    axios.defaults.baseURL = this.baseAddress;
+    axios.defaults.baseURL = DISCOVERGY_API_BASE_URL;
 
     this.oAuthToken = oAuthToken;
 
