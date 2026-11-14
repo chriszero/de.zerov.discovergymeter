@@ -1,4 +1,4 @@
-export { DiscovergyBasicAuth, DiscovergyOAuth, DiscovergyAuth } from "./discovergyAuth";
+export { DiscovergyBasicAuth, DiscovergyAuth } from "./discovergyAuth";
 export { DiscovergyApi, ELECTRICITY_FIELDS } from "./discovergyApi";
-export { Meter, Location, LastReading, LastElectricityReading, ElectricityValues, ElectricityValueName, OAuthToken } from "./models";
- 
+export { HttpClient, HttpError, isAuthError } from "./httpClient";
+export { Meter, Location, LastReading, LastElectricityReading, ElectricityValues, ElectricityValueName } from "./models";

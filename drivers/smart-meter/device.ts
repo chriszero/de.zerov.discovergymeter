@@ -6,6 +6,7 @@ import {
   LastElectricityReading,
   ElectricityValueName,
   Meter,
+  isAuthError,
 } from "../../libdiscovergy";
 
 /** Polling interval in seconds, if the setting is missing or invalid */
@@ -36,16 +37,9 @@ const PERMANENT_CAPABILITIES = [
   "measure_power",
 ];
 
-/** Returns a short description of an error, without request details (credentials!) */
+/** Returns a short description of an error */
 function describeError(error: any): string {
-  const message = error?.message ?? String(error);
-  const status = error?.response?.status;
-  return status ? `${message} (HTTP ${status})` : message;
-}
-
-function isAuthError(error: any): boolean {
-  const status = error?.response?.status;
-  return status === 401 || status === 403;
+  return error?.message ?? String(error);
 }
 
 class ElectricitySmartmeterDevice extends Homey.Device {

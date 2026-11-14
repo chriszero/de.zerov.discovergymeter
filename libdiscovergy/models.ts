@@ -1,22 +1,3 @@
-
-export interface OAuthToken {
-    key: string,
-    secret: string,
-    token: string,
-    tokenSecret: string,
-    verifier: string,
-}
-
-/**For authorization Step1 */
-export interface ConsumerToken {
-    key: string;
-    secret: string;
-    owner: string;
-    attributes?: null;
-    principal?: null;
-  }
-
-
 export interface Meter {
     /**Unique meterId, used as an identifier */
     meterId:                 string;

@@ -4,7 +4,7 @@ import {
   LastElectricityReading,
   ElectricityValueName,
 } from "./models";
-import { AxiosInstance } from "axios";
+import { HttpClient, QueryParams } from "./httpClient";
 
 /** Energy is delivered in 10^-10 kWh */
 const ENERGY_SCALE = 1e10;
@@ -55,18 +55,18 @@ function enqueue<T>(request: () => Promise<T>): Promise<T> {
 }
 
 export class DiscovergyApi {
-  private axios: AxiosInstance;
+  private http: HttpClient;
 
   /** key: meterId, value: [fields] */
   private cachedFields = new Map<string, string[]>();
 
-  constructor(axiosInstance: AxiosInstance) {
-    this.axios = axiosInstance;
+  constructor(httpClient: HttpClient) {
+    this.http = httpClient;
   }
 
   /**Return all meters that the user has access to */
   public async getMeters(): Promise<Meter[]> {
-    const { data } = await enqueue(() => this.axios.get("/meters"));
+    const data = await enqueue(() => this.http.get<Meter[]>("/meters"));
 
     if (!Array.isArray(data)) {
       throw new Error("Unexpected response for meters");
@@ -87,12 +87,8 @@ export class DiscovergyApi {
       return cached;
     }
 
-    const { data } = await enqueue(() =>
-      this.axios.get("/field_names", {
-        params: {
-          meterId: meterId,
-        },
-      })
+    const data = await enqueue(() =>
+      this.http.get<string[]>("/field_names", { meterId: meterId })
     );
 
     if (!Array.isArray(data)) {
@@ -113,7 +109,7 @@ export class DiscovergyApi {
   ): Promise<LastReading> {
     const meterId = typeof meter === "string" ? meter : meter.meterId;
 
-    const params: { [key: string]: string | boolean } = {
+    const params: QueryParams = {
       meterId: meterId,
       each: false,
     };
@@ -122,8 +118,8 @@ export class DiscovergyApi {
       params.fields = fields.join(",");
     }
 
-    const { data } = await enqueue(() =>
-      this.axios.get("/last_reading", { params })
+    const data = await enqueue(() =>
+      this.http.get<LastReading>("/last_reading", params)
     );
 
     if (!data || typeof data.values !== "object" || data.values === null) {

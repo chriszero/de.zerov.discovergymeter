@@ -1,5 +1,9 @@
 import Homey from "homey";
-import { DiscovergyBasicAuth, DiscovergyApi } from "../../libdiscovergy";
+import {
+  DiscovergyBasicAuth,
+  DiscovergyApi,
+  isAuthError,
+} from "../../libdiscovergy";
 
 class ElectricitySmartmeterDriver extends Homey.Driver {
   /**
@@ -25,8 +29,7 @@ class ElectricitySmartmeterDriver extends Homey.Driver {
         await api.getMeters();
         credentialsAreValid = true;
       } catch (error: any) {
-        const status = error?.response?.status;
-        if (status !== 401 && status !== 403) {
+        if (!isAuthError(error)) {
           // network problem, rate limit, ... -> show the error to the user
           this.error("Login failed:", error?.message);
           throw new Error(
@@ -44,9 +47,7 @@ class ElectricitySmartmeterDriver extends Homey.Driver {
 
     session.setHandler("list_devices", async () => {
       const da = new DiscovergyBasicAuth(username, password);
-      const oAuthClient = await da.authorizeInstance();
-
-      const api = new DiscovergyApi(oAuthClient);
+      const api = new DiscovergyApi(await da.authorizeInstance());
       const meters = await api.getMeters();
 
       const devices: any[] = [];
