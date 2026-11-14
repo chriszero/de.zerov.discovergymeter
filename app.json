@@ -5,7 +5,7 @@
   "bugs": {
     "url": "https://github.com/chriszero/de.zerov.discovergymeter/issues"
   },
-  "version": "1.0.6",
+  "version": "1.0.7",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -138,7 +138,7 @@
               "type": "number",
               "value": 5,
               "min": 1,
-              "max": 60,
+              "max": 900,
               "units": {
                 "en": "seconds",
                 "de": "Sekunden"
@@ -148,8 +148,8 @@
                 "de": "Aktualisierungsinterval"
               },
               "hint": {
-                "en": "Standard is 5sec. Some Meters are ",
-                "de": "Standart ist 5 Sek. Bei Zählern ohne Sekundenwerte sind 60 Sek. ausreichend."
+                "en": "Default is 5 s. For meters without per-second values (e.g. iMSys / smart meter gateway), 60 s or more is sufficient.",
+                "de": "Standard ist 5 Sek. Bei Zählern ohne Sekundenwerte (z. B. iMSys / Smart-Meter-Gateway) reichen 60 Sek. oder mehr."
               }
             }
           ]

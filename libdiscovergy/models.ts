@@ -1,22 +1,3 @@
-
-export interface OAuthToken {
-    key: string,
-    secret: string,
-    token: string,
-    tokenSecret: string,
-    verifier: string,
-}
-
-/**For authorization Step1 */
-export interface ConsumerToken {
-    key: string;
-    secret: string;
-    owner: string;
-    attributes?: null;
-    principal?: null;
-  }
-
-
 export interface Meter {
     /**Unique meterId, used as an identifier */
     meterId:                 string;
@@ -75,34 +56,49 @@ export interface LastReading {
 }
 
 
-export interface LastElectricityReading {
+/**
+ * Values of an electricity meter, already converted to Homey units.
+ * A value is undefined if the meter does not provide it (e.g. meters
+ * without per-phase values, without tariffs or without voltage, like
+ * many iMSys / smart meter gateway meters).
+ */
+export interface ElectricityValues {
+    /**kWh */
+    energyInTotal?: number;
+    /**kWh (HT) */
+    energyIn1?: number;
+    /**kWh (NT) */
+    energyIn2?: number;
+
+    /**kWh */
+    energyOutTotal?: number;
+    /**kWh (HT) */
+    energyOut1?: number;
+    /**kWh (NT)*/
+    energyOut2?: number;
+
+    /**Watts */
+    currentPowerTotal?: number;
+    /**Watts */
+    currentPower1?: number;
+    /**Watts */
+    currentPower2?: number;
+    /**Watts */
+    currentPower3?: number;
+
+    /**Volts */
+    voltage1?: number;
+    /**Volts */
+    voltage2?: number;
+    /**Volts */
+    voltage3?: number;
+}
+
+export type ElectricityValueName = keyof ElectricityValues;
+
+export interface LastElectricityReading extends ElectricityValues {
     /**Time of the measurement, as a UNIX millisecond timestamp */
     time: number;
-    /**kwh */
-    energyInTotal: number;
-    /**kwh (HT) */
-    energyIn1: number;
-    /**kwh (NT) */
-    energyIn2: number;
-
-    /**kwh */
-    energyOutTotal: number;
-    /**kwh (HT) */
-    energyOut1: number;
-    /**kwh (NT)*/
-    energyOut2: number;
-
-    /**Watts */
-    currentPowerTotal: number;
-    /**Watts */
-    currentPower1: number;
-    /**Watts */
-    currentPower2: number;
-    /**Watts */
-    currentPower3: number;
-
+    /**true if at least one voltage value is contained in the reading */
     voltageAvailable: boolean;
-    voltage1?: number;
-    voltage2?: number;
-    voltage3?: number;
 }

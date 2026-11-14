@@ -1,99 +1,180 @@
-import { Meter, LastReading, LastElectricityReading } from "./models";
-import { AxiosInstance } from "axios";
+import {
+  Meter,
+  LastReading,
+  LastElectricityReading,
+  ElectricityValueName,
+} from "./models";
+import { HttpClient, QueryParams } from "./httpClient";
+
+/** Energy is delivered in 10^-10 kWh */
+const ENERGY_SCALE = 1e10;
+/** Power is delivered in mW */
+const POWER_SCALE = 1000;
+/** Voltage is delivered in mV */
+const VOLTAGE_SCALE = 1000;
+
+/**
+ * Mapping of electricity values to the raw field names of the API.
+ * Depending on the meter type, the same value is delivered under different
+ * field names (e.g. "power1" vs. "phase1Power", "voltage1" vs. "phase1Voltage").
+ * The first field name that is contained in a reading wins.
+ */
+export const ELECTRICITY_FIELDS: {
+  [name in ElectricityValueName]-?: { fields: string[]; scale: number };
+} = {
+  energyInTotal: { fields: ["energy"], scale: ENERGY_SCALE },
+  energyIn1: { fields: ["energy1"], scale: ENERGY_SCALE },
+  energyIn2: { fields: ["energy2"], scale: ENERGY_SCALE },
+  energyOutTotal: { fields: ["energyOut"], scale: ENERGY_SCALE },
+  energyOut1: { fields: ["energyOut1"], scale: ENERGY_SCALE },
+  energyOut2: { fields: ["energyOut2"], scale: ENERGY_SCALE },
+  currentPowerTotal: { fields: ["power"], scale: POWER_SCALE },
+  currentPower1: { fields: ["power1", "phase1Power"], scale: POWER_SCALE },
+  currentPower2: { fields: ["power2", "phase2Power"], scale: POWER_SCALE },
+  currentPower3: { fields: ["power3", "phase3Power"], scale: POWER_SCALE },
+  voltage1: { fields: ["voltage1", "phase1Voltage"], scale: VOLTAGE_SCALE },
+  voltage2: { fields: ["voltage2", "phase2Voltage"], scale: VOLTAGE_SCALE },
+  voltage3: { fields: ["voltage3", "phase3Voltage"], scale: VOLTAGE_SCALE },
+};
+
+const ELECTRICITY_VALUE_NAMES = Object.keys(
+  ELECTRICITY_FIELDS
+) as ElectricityValueName[];
+
+/**
+ * The API allows only 1 concurrent connection per client IP, additional
+ * requests are rejected with HTTP 429. All requests of the app (all devices
+ * and the pairing) are therefore sent one after another.
+ */
+let requestQueue: Promise<unknown> = Promise.resolve();
+
+function enqueue<T>(request: () => Promise<T>): Promise<T> {
+  const result = requestQueue.then(request, request);
+  requestQueue = result.catch(() => undefined);
+  return result;
+}
 
 export class DiscovergyApi {
-  private axios: AxiosInstance;
+  private http: HttpClient;
 
   /** key: meterId, value: [fields] */
-  private cachedFields = new Map<string, [string]>();
+  private cachedFields = new Map<string, string[]>();
 
-  constructor(axiosInstance: AxiosInstance) {
-    this.axios = axiosInstance;
+  constructor(httpClient: HttpClient) {
+    this.http = httpClient;
   }
 
   /**Return all meters that the user has access to */
-  public async getMeters(): Promise<[Meter]> {
-    let { data } = await this.axios.get("/meters");
+  public async getMeters(): Promise<Meter[]> {
+    const data = await enqueue(() => this.http.get<Meter[]>("/meters"));
+
+    if (!Array.isArray(data)) {
+      throw new Error("Unexpected response for meters");
+    }
 
     return data;
   }
 
   /**
-   * getFieldNames
+   * Returns the field names a meter provides. The result is cached per meter,
+   * as the available fields of a meter do not change.
    */
-  public async getFieldNames(meter: Meter | string): Promise<[string]> {
+  public async getFieldNames(meter: Meter | string): Promise<string[]> {
     const meterId = typeof meter === "string" ? meter : meter.meterId;
 
-    let { data } = await this.axios.get("/field_names", {
-      params: {
-        meterId: meterId,
-      },
-    }).catch();
+    const cached = this.cachedFields.get(meterId);
+    if (cached) {
+      return cached;
+    }
+
+    const data = await enqueue(() =>
+      this.http.get<string[]>("/field_names", { meterId: meterId })
+    );
+
+    if (!Array.isArray(data)) {
+      throw new Error("Unexpected response for field_names");
+    }
+
+    this.cachedFields.set(meterId, data);
+    return data;
+  }
+
+  /**
+   * Returns the last reading of a meter.
+   * @param fields fields to request; if omitted, all fields of the meter are returned
+   */
+  public async getLastReading(
+    meter: Meter | string,
+    fields?: string[]
+  ): Promise<LastReading> {
+    const meterId = typeof meter === "string" ? meter : meter.meterId;
+
+    const params: QueryParams = {
+      meterId: meterId,
+      each: false,
+    };
+    if (fields && fields.length > 0) {
+      // the API expects a comma separated list
+      params.fields = fields.join(",");
+    }
+
+    const data = await enqueue(() =>
+      this.http.get<LastReading>("/last_reading", params)
+    );
+
+    if (!data || typeof data.values !== "object" || data.values === null) {
+      throw new Error("Unexpected response for last_reading");
+    }
 
     return data;
   }
 
-  public async getLastReading(
-    meter: Meter | string,
-    fields?: [string]
-  ): Promise<LastReading> {
-    const meterId = typeof meter === "string" ? meter : meter.meterId;
-    
-    if (fields == undefined) {
-      // check if we have cached fields for meterId
-      if(this.cachedFields.has('meterId')) {
-        fields = this.cachedFields.get('meterId')
-      }
-      else {
-        fields = await this.getFieldNames(meter);
-        this.cachedFields.set(meterId, fields);
-      }
-    }
-    let { data } = await this.axios.get("/last_reading", {
-      params: {
-        meterId: meterId,
-        each: false,
-        fields: fields,
-      },
-    });
+  /**
+   * Returns which electricity values a meter provides, based on its field names.
+   */
+  public async getAvailableElectricityValues(
+    meter: Meter | string
+  ): Promise<ElectricityValueName[]> {
+    const fieldNames = await this.getFieldNames(meter);
 
-    return data;
+    return ELECTRICITY_VALUE_NAMES.filter((name) =>
+      ELECTRICITY_FIELDS[name].fields.some((field) =>
+        fieldNames.includes(field)
+      )
+    );
   }
 
   public async getLastElectricityReading(
     meter: Meter | string
   ): Promise<LastElectricityReading> {
-    const kwhFactor = 10e9; // 1.000.000.000
-    const meterId = typeof meter === "string" ? meter : meter.meterId;
-    const lastReading = await this.getLastReading(meterId);
+    const lastReading = await this.getLastReading(meter);
+    const values = lastReading.values;
 
     const lastElectricityReading: LastElectricityReading = {
       time: lastReading.time,
-      energyInTotal: lastReading.values["energy"] / kwhFactor,
-      energyIn1: lastReading.values["energy1"] / kwhFactor,
-      energyIn2: lastReading.values["energy2"] / kwhFactor,
-      energyOutTotal: lastReading.values["energyOut"] / kwhFactor,
-      energyOut1: lastReading.values["energyOut1"] / kwhFactor,
-      energyOut2: lastReading.values["energyOut2"] / kwhFactor,
-      currentPowerTotal: lastReading.values["power"] / 1000,
-      currentPower1: lastReading.values["power1"] / 1000,
-      currentPower2: lastReading.values["power2"] / 1000,
-      currentPower3: lastReading.values["power3"] / 1000,
-
-      voltageAvailable: false
+      voltageAvailable: false,
     };
 
-    if(lastReading.values['voltage1']){
-      lastElectricityReading.voltageAvailable = true;
-      lastElectricityReading.voltage1 = lastReading.values['voltage1'] / 1000;
-      lastElectricityReading.voltage2 = lastReading.values['voltage2'] / 1000;
-      lastElectricityReading.voltage3 = lastReading.values['voltage3'] / 1000;
+    for (const name of ELECTRICITY_VALUE_NAMES) {
+      const { fields, scale } = ELECTRICITY_FIELDS[name];
+      for (const field of fields) {
+        const raw = values[field];
+        if (typeof raw === "number" && Number.isFinite(raw)) {
+          lastElectricityReading[name] = raw / scale;
+          break;
+        }
+      }
     }
+
+    lastElectricityReading.voltageAvailable =
+      lastElectricityReading.voltage1 !== undefined ||
+      lastElectricityReading.voltage2 !== undefined ||
+      lastElectricityReading.voltage3 !== undefined;
 
     return lastElectricityReading;
   }
 
   // public async getLastGasReading(meter: Meter | string): Promise<LastGasReading> {
-  
+
   // }
 }
