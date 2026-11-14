@@ -1,0 +1,7 @@
+{
+  "errors": {
+    "invalid_credentials": "Ungültige E-Mail-Adresse oder Passwort.",
+    "meter_not_found": "Dieser Zähler ist mit dem angegebenen Account nicht verfügbar.",
+    "connection": "Keine Verbindung zu inexogy möglich: __message__"
+  }
+}

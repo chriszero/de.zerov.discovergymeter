@@ -18,16 +18,22 @@ class ElectricitySmartmeterDriver extends Homey.Driver {
       password = data.password;
 
       const da = new DiscovergyBasicAuth(username, password);
-
-      const oAuthClient = await da.authorizeInstance();
+      const api = new DiscovergyApi(await da.authorizeInstance());
 
       let credentialsAreValid = false;
       try {
-        const response = await oAuthClient.get("/meters");
-        credentialsAreValid = response.status == 200;
-      } catch (error) {
-        credentialsAreValid = false;
-        this.log("Creditials are not valid");
+        await api.getMeters();
+        credentialsAreValid = true;
+      } catch (error: any) {
+        const status = error?.response?.status;
+        if (status !== 401 && status !== 403) {
+          // network problem, rate limit, ... -> show the error to the user
+          this.error("Login failed:", error?.message);
+          throw new Error(
+            this.homey.__("errors.connection", { message: error?.message })
+          );
+        }
+        this.log("Credentials are not valid");
       }
 
       // return true to continue adding the device if the login succeeded
@@ -43,7 +49,7 @@ class ElectricitySmartmeterDriver extends Homey.Driver {
       const api = new DiscovergyApi(oAuthClient);
       const meters = await api.getMeters();
 
-      const devices = Array();
+      const devices: any[] = [];
 
       meters.forEach((meter) => {
         if (meter.measurementType === "ELECTRICITY") {

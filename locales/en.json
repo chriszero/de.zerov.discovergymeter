@@ -1,1 +1,7 @@
-{}
+{
+  "errors": {
+    "invalid_credentials": "Invalid e-mail address or password.",
+    "meter_not_found": "This meter is not available with the given account.",
+    "connection": "Could not connect to inexogy: __message__"
+  }
+}

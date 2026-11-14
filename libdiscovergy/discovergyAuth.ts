@@ -4,6 +4,9 @@ import addOAuthInterceptor, { OAuthInterceptorConfig } from "axios-oauth-1.0a";
 
 const DISCOVERGY_API_BASE_URL = "https://api.inexogy.com/public/v1";
 
+/** Requests are sent one after another, a hanging request must not block forever */
+const REQUEST_TIMEOUT_MS = 20000;
+
 export interface DiscovergyAuth {
   authorizeInstance(): Promise<AxiosInstance>;
 }
@@ -20,6 +23,7 @@ export class DiscovergyBasicAuth implements DiscovergyAuth {
   public async authorizeInstance(): Promise<AxiosInstance> {
     const basicAuthClient = axios.create({
       baseURL: DISCOVERGY_API_BASE_URL,
+      timeout: REQUEST_TIMEOUT_MS,
       auth: {
         username: this.user,
         password: this.password,
