@@ -16,5 +16,9 @@
   },
   "1.0.6": {
     "en": "Updated api URL"
+  },
+  "1.0.7": {
+    "en": "Fixed app crash (Invalid Capability: measure_voltage). Capabilities now adapt to the meter. Support for more meter types (iMSys / OBIS field names). Device becomes unavailable on invalid credentials.",
+    "de": "Absturz der App behoben (Invalid Capability: measure_voltage). Capabilities passen sich jetzt dem Zähler an. Unterstützung weiterer Zählertypen (iMSys / OBIS-Feldnamen). Gerät wird bei ungültigen Zugangsdaten als nicht verfügbar markiert."
   }
 }
